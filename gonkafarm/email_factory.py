@@ -12,8 +12,7 @@ import time
 import requests
 from camoufox.sync_api import Camoufox
 
-RESI_POOL_FILE = os.environ.get("RESI_POOL_FILE", "residential_alive.txt")
-RESULT_FILE = os.environ.get("RESULT_FILE", "gonka_email_accounts.txt")
+from gonkafarm.config import RESI_POOL_FILE, RESULT_FILE
 
 
 def load_resi_pool():

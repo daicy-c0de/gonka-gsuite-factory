@@ -17,10 +17,10 @@ Dua mode jalan:
 ## Jalan CLI (tanpa Telegram)
 ```bash
 # Signup via akun Google
-python3 cli.py --email lu@gmail.com --password 'secret' --proxy user:pass@host:port
+python3 app.py --email lu@gmail.com --password 'secret' --proxy user:pass@host:port
 
 # Signup via temp mail (tanpa google), 3 akun paralel + proxy resi
-python3 cli.py --tempmail --count 3 --proxy-resi residential.txt
+python3 app.py --tempmail --count 3 --proxy-resi residential.txt
 
 # Hasil di akun.txt: email|auth_token|api_key
 ```
@@ -29,18 +29,21 @@ python3 cli.py --tempmail --count 3 --proxy-resi residential.txt
 ```bash
 cp .env.example .env
 # isi BOT_TOKEN (bot lu sendiri dari @BotFather) + AUTH_USERS (telegram id lu)
-python3 src/bot.py
+python3 app.py --tg
 ```
 Flow: paste akun google (email|password per baris) → pilih jumlah thread →
 pilih proxy → live status per step → hasil file .txt.
 
 ## Struktur
 ```
-src/
-├── bot.py             # Telegram bot (python-telegram-bot)
-├── gonka_factory.py   # worker: Google OAuth flow (playwright chromium)
-└── email_factory.py   # worker: email signup + OTP (camoufox)
-cli.py                 # CLI wrapper
+gonkafarm/
+├── __init__.py
+├── config.py          # env/.env loader + RESI_POOL_FILE / RESULT_FILE / PROGRESS_DIR
+├── google_factory.py  # worker: Google OAuth flow (playwright chromium)
+├── email_factory.py   # worker: email signup + OTP (camoufox)
+├── telegram.py        # Telegram bot (python-telegram-bot)
+└── cli.py             # argparse + worker threads
+app.py                 # entry: CLI (--email/--password/--tempmail) atau bot (--tg)
 ```
 
 ## Environment variables (.env)

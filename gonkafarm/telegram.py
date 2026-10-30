@@ -16,27 +16,13 @@ import telegram
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 
-_DIR = os.path.dirname(os.path.abspath(__file__))
+from gonkafarm.config import PROGRESS_DIR
 
-# token via env / .env (ga hardcode)
-def _load_env(path=None):
-    p = path or os.path.join(_DIR, ".env")
-    if os.path.exists(p):
-        for line in open(p):
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                k, v = line.split("=", 1)
-                os.environ.setdefault(k.strip(), v.strip())
-
-_load_env()
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
-if not BOT_TOKEN:
-    raise SystemExit("BOT_TOKEN belum diset (.env atau env var)")
+_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 AUTHORIZED_USERS = {int(x) for x in os.environ.get("AUTH_USERS", "").split(",") if x.strip()}
-FACTORY = os.path.join(_DIR, "gonka_factory.py")
+FACTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "google_factory.py")
 RESULTS_FILE = os.path.join(_DIR, "gonka_accounts.txt")
-PROGRESS_DIR = os.path.join(_DIR, "progress")
 PROXY_FILE = os.path.join(_DIR, "proxy.txt")  # optional, isi proxy string
 
 STEP_LABEL = {
@@ -506,8 +492,11 @@ async def on_error(update, context):
     print("bot error:", type(context.error).__name__, str(context.error)[:200], flush=True)
 
 
-def main():
-    app = Application.builder().token(BOT_TOKEN).build()
+def run():
+    bot_token = os.environ.get("BOT_TOKEN", "")
+    if not bot_token:
+        raise SystemExit("BOT_TOKEN belum diset (.env atau env var)")
+    app = Application.builder().token(bot_token).build()
     app.add_error_handler(on_error)
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("stop", cmd_stop))
@@ -521,4 +510,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run()

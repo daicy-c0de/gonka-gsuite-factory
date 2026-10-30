@@ -1,21 +1,20 @@
-#!/usr/bin/env python3
 """CLI mode: bikin akun gonkarouter.io tanpa Telegram.
 
 Contoh:
-  python3 cli.py --email you@gmail.com --password 'secret'               # 1 akun, no proxy
-  python3 cli.py --email you@gmail.com --password 'secret' --proxy host:port
-  python3 cli.py --tempmail --count 3 --proxy-resi residential.txt      # temp mail + proxy resi pool
+  python3 app.py --email you@gmail.com --password 'secret'               # 1 akun, no proxy
+  python3 app.py --email you@gmail.com --password 'secret' --proxy host:port
+  python3 app.py --tempmail --count 3 --proxy-resi residential.txt      # temp mail + proxy resi pool
 
 Output: akun.txt (email|auth_token|api_key) + progress live di terminal.
 """
 import argparse, json, os, subprocess, sys, threading, time
 
-_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, _DIR)
+_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_PKG = os.path.dirname(os.path.abspath(__file__))
 
 
 def run_factory(email, password, proxy=None):
-    cmd = [sys.executable, os.path.join(_DIR, 'src', 'gonka_factory.py'), email, password]
+    cmd = [sys.executable, os.path.join(_PKG, 'google_factory.py'), email, password]
     if proxy:
         cmd.append(proxy)
     r = subprocess.run(cmd, capture_output=True, text=True, cwd=_DIR)
@@ -27,7 +26,7 @@ def run_factory(email, password, proxy=None):
 
 
 def run_email_factory(proxy=None):
-    cmd = [sys.executable, os.path.join(_DIR, 'src', 'email_factory.py')]
+    cmd = [sys.executable, os.path.join(_PKG, 'email_factory.py')]
     if proxy:
         cmd.append(proxy)
     r = subprocess.run(cmd, capture_output=True, text=True, cwd=_DIR)
@@ -38,7 +37,7 @@ def run_email_factory(proxy=None):
         return {'error': (r.stderr or 'unknown')[:200]}
 
 
-def main():
+def main(args=None):
     ap = argparse.ArgumentParser(description='gonkarouter.io x gsuite account factory (CLI)')
     ap.add_argument('--email', help='akun google email')
     ap.add_argument('--password', help='password google')
@@ -47,7 +46,8 @@ def main():
     ap.add_argument('--count', type=int, default=1, help='jumlah akun (default 1)')
     ap.add_argument('--proxy-resi', dest='proxy_resi', help='file daftar proxy residential (1 per baris)')
     ap.add_argument('--out', default='akun.txt', help='file output (default akun.txt)')
-    args = ap.parse_args()
+    if args is None:
+        args = ap.parse_args()
 
     if not args.tempmail and not (args.email and args.password):
         ap.error('--email + --password wajib (atau pakai --tempmail)')
@@ -84,7 +84,3 @@ def main():
         t.join()
     print(f"\n=== Selesai: {sum(1 for r in results if r.get('key'))}/{len(results)} sukses ===")
     print(f"Hasil: {args.out}")
-
-
-if __name__ == '__main__':
-    main()

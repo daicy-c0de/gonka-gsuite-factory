@@ -9,7 +9,7 @@ Steps emitted to progress/<email>.json for live telegram status.
 import time, re, os, sys, json
 from playwright.sync_api import sync_playwright
 
-PROGRESS_DIR = os.environ.get("PROGRESS_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "progress"))
+from gonkafarm.config import PROGRESS_DIR
 
 
 def parse_proxy(proxy):
