@@ -1,3 +1,7 @@
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+![deps](https://img.shields.io/badge/engine-playwright%20%2B%20camoufox-orange)
+
 # gonka-gsuite-factory
 
 Account factory buat **gonkarouter.io** signup via Google (gsuite / akun gmail biasa)
