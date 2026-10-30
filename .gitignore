@@ -1,0 +1,8 @@
+.env
+*.txt
+__pycache__/
+progress/
+*.log
+token.b64
+akun.txt
+venv/
